@@ -74,14 +74,25 @@
       loading(true);
 
       try {
-        // Simulando requisição
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
 
-        // Aqui viria sua requisição real com fetch()
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          alert(dados.mensagem || "Erro ao fazer login.");
+          return;
+        }
+
         alert("Login efetuado com sucesso!");
         window.location.href = "dashboard.html";
+
       } catch (err) {
-        alert("Erro ao fazer login.");
+        alert("Erro ao conectar com o servidor.");
+        console.error(err);
       } finally {
         loading(false);
       }
