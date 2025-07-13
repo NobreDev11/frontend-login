@@ -1,60 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Login de Usuário</title>
-  </head>
-  <body>
-    <h1>Login</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
 
-    <form id="formLogin">
-      <label for="email">E-mail:</label>
-      <input type="email" id="email" name="email" required />
-      <br /><br />
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button id="loginBtn"><span id="loginText">Entrar</span></button>
+  </div>
 
-      <label for="senha">Senha:</label>
-      <input type="password" id="senha" name="senha" required />
-      <br /><br />
+  <script>
+    const btn = document.getElementById('loginBtn');
+    const txt = document.getElementById('loginText');
 
-      <button type="submit">Entrar</button>
-    </form>
+    function loading(on) {
+      btn.disabled = on;
+      txt.textContent = on ? 'Carregando...' : 'Entrar';
+    }
 
-    <br />
-    <button onclick="window.location.href='cadastro.html'">Cadastrar Novo Usuário</button>
+    btn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
 
-    <p id="mensagemErro" style="color: red;"></p>
+      if (!email || !senha) {
+        alert("Preencha todos os campos.");
+        return;
+      }
 
-    <script>
-      document
-        .getElementById('formLogin')
-        .addEventListener('submit', async function (event) {
-          event.preventDefault();
+      loading(true);
 
-          const email = document.getElementById('email').value;
-          const senha = document.getElementById('senha').value;
-          const mensagemErro = document.getElementById('mensagemErro');
+      try {
+        // Simulando requisição
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-          try {
-            const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, senha }),
-            });
-
-            if (resposta.ok) {
-              const dados = await resposta.json();
-              alert('Login realizado com sucesso!');
-              mensagemErro.textContent = '';
-              window.location.href = "dashboard.html";
-            } else {
-              mensagemErro.textContent = 'E-mail ou senha incorretos.';
-            }
-          } catch (erro) {
-            console.error('Erro no login:', erro);
-            mensagemErro.textContent = 'Erro ao conectar com o servidor.';
-          }
-        });
-    </script>
-  </body>
+        // Aqui viria sua requisição real com fetch()
+        alert("Login efetuado com sucesso!");
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        alert("Erro ao fazer login.");
+      } finally {
+        loading(false);
+      }
+    });
+  </script>
+</body>
 </html>
