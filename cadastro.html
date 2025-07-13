@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro de Usuário</title>
+  </head>
+  <body>
+    <h1>Cadastro de Usuário</h1>
+
+    <form id="formCadastro">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required />
+      <br /><br />
+
+      <label for="email">E-mail:</label>
+      <input type="email" id="email" name="email" required />
+      <br /><br />
+
+      <label for="senha">Senha:</label>
+      <input type="password" id="senha" name="senha" required />
+      <br /><br />
+
+      <button type="submit">Cadastrar</button>
+    </form>
+
+    <br />
+    <button onclick="window.location.href='login.html'">Voltar para Login</button>
+
+    <p id="mensagemErro" style="color: red;"></p>
+
+    <script>
+      document
+        .getElementById('formCadastro')
+        .addEventListener('submit', async function (event) {
+          event.preventDefault();
+
+          const nome = document.getElementById('nome').value;
+          const email = document.getElementById('email').value;
+          const senha = document.getElementById('senha').value;
+          const mensagemErro = document.getElementById('mensagemErro');
+
+          try {
+            const resposta = await fetch(
+              'https://sistema-login-h1h5.onrender.com/api/usuarios/cadastrar',
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha }),
+              }
+            );
+
+            if (resposta.ok) {
+              alert('Cadastro realizado com sucesso!');
+              document.getElementById('formCadastro').reset();
+              mensagemErro.textContent = '';
+            } else {
+              mensagemErro.textContent = 'Falha no cadastro. Tente novamente.';
+            }
+          } catch (erro) {
+            console.error('Erro no cadastro:', erro);
+            mensagemErro.textContent = 'Erro ao conectar com o servidor.';
+          }
+        });
+    </script>
+  </body>
+</html>
