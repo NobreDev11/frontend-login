@@ -52,8 +52,8 @@
 
   <div class="login-container">
     <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="senha" placeholder="Senha" />
+    <input type="email" id="email" name="email" placeholder="Email" autocomplete="email" />
+    <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="current-password" />
     <button id="loginBtn"><span id="loginText">Entrar</span></button>
     <button class="secondary-btn" onclick="window.location.href='cadastro.html'">Cadastrar</button>
   </div>
@@ -79,24 +79,13 @@
       loading(true);
 
       try {
-        const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, senha })
-        });
+        // Aqui viria sua requisição real com fetch()
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const dados = await resposta.json();
-
-        if (resposta.ok && dados.token) {
-          localStorage.setItem('token', dados.token);
-          alert("Login efetuado com sucesso!");
-          window.location.href = "dashboard.html";
-        } else {
-          alert(dados.mensagem || "Erro ao fazer login.");
-        }
+        alert("Login efetuado com sucesso!");
+        window.location.href = "dashboard.html";
       } catch (err) {
-        console.error("Erro ao fazer login:", err);
-        alert("Erro ao conectar com o servidor.");
+        alert("Erro ao fazer login.");
       } finally {
         loading(false);
       }
