@@ -59,19 +59,53 @@
   </header>
 
   <main>
-    <div class="card">
-      <h2>Login realizado com sucesso!</h2>
-      <p>Você está logado no sistema. Aqui poderá acessar funcionalidades futuras.</p>
+    <div class="card" id="painelUsuario">
+      <h2>Carregando dados...</h2>
+    </div>
+    <div style="text-align:center;">
       <button class="logout-btn" onclick="logout()">Sair</button>
     </div>
   </main>
 
   <script>
-    function logout() {
-      // Aqui você pode limpar o token se estiver usando JWT/localStorage
-      alert("Sessão encerrada!");
-      window.location.href = "login.html";
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert("Acesso negado! Faça login primeiro.");
+      window.location.href = 'login.html';
     }
+
+    async function carregarDadosUsuario() {
+      try {
+        const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/perfil', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!resposta.ok) {
+          throw new Error('Falha ao carregar dados');
+        }
+
+        const dados = await resposta.json();
+        document.getElementById('painelUsuario').innerHTML = `
+          <h2>Olá, ${dados.nome}!</h2>
+          <p><strong>Email:</strong> ${dados.email}</p>
+        `;
+      } catch (erro) {
+        alert("Sessão expirada. Faça login novamente.");
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      alert("Sessão encerrada!");
+      window.location.href = 'login.html';
+    }
+
+    carregarDadosUsuario();
   </script>
 </body>
 </html>
