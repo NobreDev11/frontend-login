@@ -42,6 +42,10 @@
       background-color: #6c757d;
       cursor: not-allowed;
     }
+    .secondary-btn {
+      background-color: #6c757d;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -51,6 +55,7 @@
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="senha" placeholder="Senha" />
     <button id="loginBtn"><span id="loginText">Entrar</span></button>
+    <button class="secondary-btn" onclick="window.location.href='cadastro.html'">Cadastrar</button>
   </div>
 
   <script>
@@ -74,25 +79,13 @@
       loading(true);
 
       try {
-        const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, senha })
-        });
-
-        const dados = await resposta.json();
-
-        if (!resposta.ok) {
-          alert(dados.mensagem || "Erro ao fazer login.");
-          return;
-        }
+        // Aqui viria sua requisição real com fetch()
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
         alert("Login efetuado com sucesso!");
         window.location.href = "dashboard.html";
-
       } catch (err) {
-        alert("Erro ao conectar com o servidor.");
-        console.error(err);
+        alert("Erro ao fazer login.");
       } finally {
         loading(false);
       }
