@@ -6,88 +6,109 @@
   <title>Login</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background-color: #e0f7fa;
+      color: #333;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
     .login-container {
-      background: white;
+      background-color: #ffffff;
       padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
-    }
-    input {
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 20px;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
     button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background-color: #007bff;
+      border: none;
       color: white;
       font-weight: bold;
-      border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-    button:disabled {
-      background-color: #6c757d;
-      cursor: not-allowed;
+
+    button:hover {
+      background-color: #0056b3;
     }
-    .secondary-btn {
-      background-color: #6c757d;
-      margin-top: 10px;
+
+    .link-cadastro {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .link-cadastro:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
   <div class="login-container">
-    <h2>Login</h2>
-    <input type="email" id="email" name="email" placeholder="Email" autocomplete="email" />
-    <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="current-password" />
-    <button id="loginBtn"><span id="loginText">Entrar</span></button>
-    <button class="secondary-btn" onclick="window.location.href='cadastro.html'">Cadastrar</button>
+    <h1>Login</h1>
+    <form id="loginForm" autocomplete="on">
+      <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email"/>
+      <input type="password" id="senha" name="senha" placeholder="Senha" required autocomplete="current-password"/>
+      <button type="submit">Entrar</button>
+    </form>
+    <a class="link-cadastro" href="register.html">Cadastrar Usuário</a>
   </div>
 
   <script>
-    const btn = document.getElementById('loginBtn');
-    const txt = document.getElementById('loginText');
+    const form = document.getElementById('loginForm');
 
-    function loading(on) {
-      btn.disabled = on;
-      txt.textContent = on ? 'Carregando...' : 'Entrar';
-    }
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
 
-    btn.addEventListener('click', async () => {
       const email = document.getElementById('email').value;
       const senha = document.getElementById('senha').value;
 
-      if (!email || !senha) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      loading(true);
-
       try {
-        // Aqui viria sua requisição real com fetch()
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const response = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, senha }),
+        });
 
-        alert("Login efetuado com sucesso!");
-        window.location.href = "dashboard.html";
-      } catch (err) {
-        alert("Erro ao fazer login.");
-      } finally {
-        loading(false);
+        if (!response.ok) {
+          throw new Error('Credenciais inválidas');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // SALVA O TOKEN
+
+        alert('Login efetuado com sucesso!');
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Erro ao fazer login: ' + error.message);
       }
     });
   </script>
