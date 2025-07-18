@@ -6,94 +6,68 @@
   <title>Painel do Usuário</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f9fc;
-      color: #333;
+      background: #e0f2f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-
-    header {
-      background-color: #007bff;
-      color: white;
-      padding: 20px;
-      text-align: center;
+    h1 {
+      color: #00695c;
     }
-
-    main {
-      padding: 30px;
-    }
-
     .card {
       background: white;
-      padding: 20px;
+      padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      max-width: 500px;
-      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
     }
-
-    .card h2 {
-      margin-top: 0;
-    }
-
     .logout-btn {
       margin-top: 20px;
-      background-color: #dc3545;
+      background-color: #d32f2f;
       color: white;
-      padding: 10px;
       border: none;
+      padding: 10px;
       width: 100%;
       border-radius: 5px;
       cursor: pointer;
     }
-
     .logout-btn:hover {
-      background-color: #c82333;
+      background-color: #b71c1c;
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <h1>Bem-vindo ao Painel</h1>
-  </header>
-
-  <main>
-    <div class="card" id="painelUsuario">
-      <h2>Carregando dados...</h2>
-    </div>
-    <div style="text-align:center;">
-      <button class="logout-btn" onclick="logout()">Sair</button>
-    </div>
-  </main>
+  <div class="card">
+    <h1>Bem-vindo!</h1>
+    <p>Você está logado com sucesso.</p>
+    <button class="logout-btn" onclick="logout()">Sair</button>
+  </div>
 
   <script>
-    const token = localStorage.getItem('token');
+    async function validarToken() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Acesso negado. Faça login.');
+        window.location.href = 'login.html';
+        return;
+      }
 
-    if (!token) {
-      alert("Acesso negado! Faça login primeiro.");
-      window.location.href = 'login.html';
-    }
-
-    async function carregarDadosUsuario() {
       try {
-        const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/perfil', {
+        const resposta = await fetch('https://sistema-login-h1h5.onrender.com/api/usuarios/validar', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         });
 
         if (!resposta.ok) {
-          throw new Error('Falha ao carregar dados');
+          throw new Error('Token inválido');
         }
-
-        const dados = await resposta.json();
-        document.getElementById('painelUsuario').innerHTML = `
-          <h2>Olá, ${dados.nome}!</h2>
-          <p><strong>Email:</strong> ${dados.email}</p>
-        `;
-      } catch (erro) {
-        alert("Sessão expirada. Faça login novamente.");
+      } catch (error) {
+        alert('Sessão expirada. Faça login novamente.');
         localStorage.removeItem('token');
         window.location.href = 'login.html';
       }
@@ -101,11 +75,10 @@
 
     function logout() {
       localStorage.removeItem('token');
-      alert("Sessão encerrada!");
       window.location.href = 'login.html';
     }
 
-    carregarDadosUsuario();
+    validarToken();
   </script>
 </body>
 </html>
