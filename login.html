@@ -13,24 +13,31 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
+
     h1 {
       color: #00796b;
     }
+
     form {
       background: white;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       width: 300px;
+      box-sizing: border-box;
     }
+
     input {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
+      box-sizing: border-box;
     }
+
     button {
       background-color: #00796b;
       color: white;
@@ -39,17 +46,26 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 16px;
     }
+
     button:hover {
       background-color: #004d40;
     }
+
     .voltar {
       margin-top: 15px;
       text-align: center;
     }
+
     .voltar a {
       color: #00796b;
       text-decoration: none;
+      font-weight: bold;
+    }
+
+    .voltar a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -78,16 +94,17 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ email, senha })
+          body: JSON.stringify({ email, senha }),
+          credentials: 'include' // se quiser usar cookie JWT no futuro
         });
 
         const data = await response.json();
         if (response.ok) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem('token', data.token); // armazena token
           alert('Login realizado com sucesso!');
-          window.location.href = 'dashboard.html';
+          window.location.href = 'dashboard.html'; // redireciona
         } else {
-          alert('Erro: ' + data.message);
+          alert('Erro: ' + (data.message || 'Credenciais inválidas'));
         }
       } catch (err) {
         console.error(err);
